@@ -254,41 +254,9 @@
 
     function renderExercises(){
       const d = plan[currentDay-1];
-      document.getElementById('todayLabel').textContent = `Сегодня: День ${d.day} — ${d.type}`;
-      const exList = document.getElementById('exList'); exList.innerHTML='';
-      d.exercises.forEach(ex=>{
-        const el = document.createElement('div'); el.className='ex';
-        el.innerHTML = `<img src="${ex.icon}" alt="${ex.name}"><div><b>${ex.name}</b></div>`;
-        exList.appendChild(el);
-      });
-    }
+      document.getElementById('todayLabel').textContent =
 
-    function renderProgress(){
-      const done = plan.filter(p=>p.completed).length;
-      document.getElementById('daysDone').textContent = done;
-      document.getElementById('daysLeft').textContent = DAYS - done;
-      document.getElementById('progressBar').style.width = (done/DAYS*100) + '%';
-    }
 
-    function setCurrentDay(n){ currentDay = n; renderExercises(); }
-
-    document.getElementById('markDone').addEventListener('click', ()=>{
-      plan[currentDay-1].completed = true;
-      savePlan(plan);
-      renderCalendar(); renderProgress();
-    });
-
-    document.getElementById('resetBtn').addEventListener('click', ()=>{
-      if(confirm('Сбросить прогресс?')){
-        plan = createDefaultPlan(); currentDay = 1; savePlan(plan);
-        renderCalendar(); renderExercises(); renderProgress();
-      }
-    });
-
-    renderCalendar(); renderExercises(); renderProgress();
-  </script>
-</body>
-</html>
 
 
 
