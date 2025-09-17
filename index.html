@@ -5,15 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Фитнес на 30 дней</title>
 
-  <!-- PWA / iOS -->
-  <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#4CAF50" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="apple-touch-icon" href="images/icon-192.png" />
 
   <style>
-    /* Простой адаптивный светлый стиль, удобный для тача на iPhone */
     :root{
       --bg: #f9f9f9;
       --card: #fff;
@@ -40,7 +37,6 @@
     .btn{background:var(--accent);color:white;padding:10px 14px;border-radius:12px;border:none;font-size:15px;cursor:pointer;touch-action:manipulation}
     .btn.secondary{background:#eee;color:#222}
     footer{padding:12px;text-align:center;color:var(--muted);font-size:13px;margin-top:14px}
-    /* крупные элементы для удобства тача на телефоне */
     @media (max-width:480px){
       .ex img{width:64px;height:64px}
       .cal-day{padding:12px;font-size:15px}
@@ -67,11 +63,10 @@
       <button id="resetBtn" class="btn secondary">Сбросить прогресс</button>
     </div>
 
-    <footer>Положи папку <code>images/</code> рядом с этим файлом и открой index.html в браузере. Добавь на главный экран через «Поделиться → На экран ’Домой’».</footer>
+    <footer>Добавь сайт на главный экран через «Поделиться → На экран ’Домой’».</footer>
   </main>
 
   <script>
-    // Простая логика — как раньше, плюс сохранение прогресса в localStorage
     const DAYS = 30;
     const STORAGE_KEY = 'fitness30_plan_v1';
 
@@ -102,7 +97,6 @@
       return [warm,...main,stretch];
     }
 
-    // load/save plan
     function loadPlan(){
       try{
         const raw = localStorage.getItem(STORAGE_KEY);
@@ -115,7 +109,6 @@
     let plan = loadPlan();
     let currentDay = 1;
 
-    // render functions
     function renderCalendar(){
       const cal = document.getElementById('calendar'); cal.innerHTML='';
       for(let i=1;i<=DAYS;i++){
@@ -149,7 +142,6 @@
 
     function setCurrentDay(n){ currentDay = n; renderExercises(); }
 
-    // mark done for current day
     document.getElementById('markDone').addEventListener('click', ()=>{
       plan[currentDay-1].completed = true;
       savePlan(plan);
@@ -163,15 +155,10 @@
       }
     });
 
-    // initial render
     renderCalendar(); renderExercises(); renderProgress();
-
-    // register service worker (для офлайн-режима). Работает только если сайт обслуживается по HTTPS/localhost.
-    if('serviceWorker' in navigator){
-      navigator.serviceWorker.register('sw.js').catch(()=>{/*silent*/});
-    }
   </script>
 </body>
 </html>
+
 
 
