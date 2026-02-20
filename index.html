@@ -1,256 +1,386 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Фитнес на 30 дней</title>
-<meta name="theme-color" content="#4CAF50">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="https://i.imgur.com/uk2X9iX.png">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b1020" />
+    <title>STUDYVERSE — умный помощник студента</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      :root {
+        --bg: #090d1a;
+        --panel: rgba(17, 24, 39, 0.68);
+        --text: #e5e7eb;
+        --muted: #9ca3af;
+        --purple: #8b5cf6;
+        --cyan: #22d3ee;
+        --lime: #84cc16;
+        --border: rgba(255, 255, 255, 0.12);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+        color: var(--text);
+        background: radial-gradient(circle at top right, rgba(139, 92, 246, 0.25), transparent 45%),
+                    radial-gradient(circle at left center, rgba(34, 211, 238, 0.18), transparent 40%),
+                    var(--bg);
+        min-height: 100vh;
+      }
+      .app {
+        max-width: 1220px;
+        margin: 0 auto;
+        padding: 22px 18px 80px;
+      }
+      .glass {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        backdrop-filter: blur(14px);
+        border-radius: 18px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 18px;
+        position: sticky;
+        top: 10px;
+        z-index: 5;
+      }
+      .brand {
+        font-weight: 800;
+        letter-spacing: .1em;
+      }
+      .badge {
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 6px 12px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .hero {
+        margin-top: 18px;
+        padding: 28px;
+        display: grid;
+        grid-template-columns: 1.1fr .9fr;
+        gap: 16px;
+      }
+      h1 { font-size: clamp(30px, 5vw, 54px); margin: 0 0 12px; line-height: 1.03; }
+      h2 { margin: 0 0 10px; font-size: 22px; }
+      p { color: var(--muted); margin: 0; line-height: 1.5; }
+      .cta {
+        margin-top: 16px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      button, .btn {
+        border: 0;
+        border-radius: 12px;
+        padding: 10px 14px;
+        color: #05070f;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform .15s ease, opacity .15s;
+      }
+      button:hover, .btn:hover { transform: translateY(-2px); }
+      .primary { background: linear-gradient(90deg, var(--purple), var(--cyan)); color: white; }
+      .secondary { background: #1f2937; color: #d1d5db; border: 1px solid var(--border); }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 18px;
+      }
+      .stat { padding: 12px; border-radius: 14px; background: rgba(0,0,0,.2); border: 1px solid var(--border); }
+      .stat strong { font-size: 24px; display: block; }
+      .grid {
+        margin-top: 16px;
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        gap: 14px;
+      }
+      .col-4 { grid-column: span 4; }
+      .col-6 { grid-column: span 6; }
+      .col-8 { grid-column: span 8; }
+      .col-12 { grid-column: span 12; }
+      .card { padding: 18px; }
+      .kpi-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+      .chip {
+        font-size: 12px;
+        color: #d1d5db;
+        background: rgba(255,255,255,.05);
+        border: 1px solid var(--border);
+        padding: 5px 9px;
+        border-radius: 999px;
+      }
+      textarea, input, select {
+        width: 100%;
+        margin-top: 8px;
+        background: rgba(17,24,39,.8);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px;
+      }
+      .list { margin: 10px 0 0; padding-left: 18px; color: #d1d5db; }
+      .list li { margin: 6px 0; }
+      .progress {
+        width: 100%;
+        background: rgba(255,255,255,.08);
+        height: 10px;
+        border-radius: 999px;
+        overflow: hidden;
+        margin-top: 8px;
+      }
+      .bar { height: 100%; background: linear-gradient(90deg, var(--lime), var(--cyan)); transition: width .4s; }
+      .timeline { margin-top: 8px; display: grid; gap: 8px; }
+      .event { padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,.04); }
+      footer { text-align: center; margin-top: 20px; color: var(--muted); font-size: 12px; }
+      @media (max-width: 900px) {
+        .hero { grid-template-columns: 1fr; }
+        .col-4, .col-6, .col-8 { grid-column: span 12; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      const { useMemo, useState } = React;
 
-<style>
-:root {
-  --bg:#f9f9f9;
-  --card:#fff;
-  --accent:#4CAF50;
-  --muted:#666;
-  --radius:10px;
-}
+      const documents = [
+        "Лекция 4: Машинное обучение.pdf",
+        "Слайды по матанализу.pptx",
+        "Практикум C++ (фото).jpg",
+      ];
 
-body {
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
-  margin:0;
-  padding:0;
-  background:var(--bg);
-  color:#222;
-  text-align:center;
-}
+      function Hero() {
+        return (
+          <section className="hero glass">
+            <div>
+              <div className="chip">STUDYVERSE • AI Student OS</div>
+              <h1>Вселенная, где студент контролирует учёбу, время и жизнь</h1>
+              <p>
+                Платформа объединяет учёбу, AI-помощника, расписание, аналитику, мотивацию и
+                социальные группы в одном интерфейсе tech/minimal в стиле Notion + ChatGPT.
+              </p>
+              <div className="cta">
+                <button className="primary">Начать бесплатно</button>
+                <button className="secondary">Демо режима экзамена</button>
+              </div>
+              <div className="stats">
+                <div className="stat"><strong>+37%</strong><span>рост успеваемости</span></div>
+                <div className="stat"><strong>12ч</strong><span>экономии в неделю</span></div>
+                <div className="stat"><strong>-41%</strong><span>прокрастинации</span></div>
+              </div>
+            </div>
+            <div className="glass card">
+              <h2>Smart Snapshot</h2>
+              <p>Сегодня: 3 дедлайна, 2 пары, 1 повторение перед экзаменом.</p>
+              <ul className="list">
+                <li>🔥 Приоритет: курсовая по БД (до 23:59)</li>
+                <li>🧠 Повторить: интегралы и ряды (45 мин)</li>
+                <li>🧘 Тревога: средняя — включён анти-выгорание режим</li>
+              </ul>
+            </div>
+          </section>
+        );
+      }
 
-header {
-  background:var(--accent);
-  color:white;
-  padding:16px 12px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.08);
-}
+      function StudyLab() {
+        const [topic, setTopic] = useState("Нейронные сети");
+        return (
+          <section className="glass card col-8">
+            <h2>📚 Учёба: интеллектуальная обработка материалов</h2>
+            <p>Загружай PDF/DOCX/PPT/фото и получай структурированный результат.</p>
+            <div className="kpi-row">
+              {documents.map((d) => <span key={d} className="chip">{d}</span>)}
+            </div>
+            <label>
+              Тема для объяснения
+              <input value={topic} onChange={(e) => setTopic(e.target.value)} />
+            </label>
+            <div className="grid" style={{ marginTop: 10 }}>
+              <div className="col-6">
+                <div className="glass card">
+                  <strong>Краткое содержание</strong>
+                  <ul className="list">
+                    <li>{topic}: ключевые термины и определения</li>
+                    <li>3 главные формулы с примерами</li>
+                    <li>Типовые ошибки на экзамене</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="col-6">
+                <div className="glass card">
+                  <strong>Генерация</strong>
+                  <ul className="list">
+                    <li>Mind-map + карточки для повторения</li>
+                    <li>10 тестовых вопросов и разбор</li>
+                    <li>Шпаргалка 1 лист А4 + экзаменационные вопросы</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      }
 
-header h1 { margin:0; font-size:18px; }
+      function Assistant() {
+        const [role, setRole] = useState("friend");
+        const tones = {
+          friend: "Давай спокойно разберёмся шаг за шагом 👌",
+          teacher: "Объясню тему системно, с акцентом на понимание.",
+          examiner: "Вопрос №1: докажите сходимость ряда и обоснуйте критерий.",
+        };
+        return (
+          <section className="glass card col-4">
+            <h2>🧠 AI-помощник</h2>
+            <p>Роли: преподаватель, строгий экзаменатор, друг-наставник.</p>
+            <select value={role} onChange={(e) => setRole(e.target.value)}>
+              <option value="friend">Друг-наставник</option>
+              <option value="teacher">Преподаватель</option>
+              <option value="examiner">Строгий экзаменатор</option>
+            </select>
+            <div className="glass card" style={{ marginTop: 10 }}>
+              <strong>Ответ ассистента:</strong>
+              <p style={{ marginTop: 8 }}>{tones[role]}</p>
+            </div>
+            <ul className="list">
+              <li>Эссе/курсовая с оформлением ГОСТ, APA, MLA</li>
+              <li>Проверка грамматики, структуры и уникальности</li>
+              <li>Объяснение: «для чайника» / «для преподавателя»</li>
+            </ul>
+          </section>
+        );
+      }
 
-.container { max-width:900px; margin:12px auto; padding:10px; }
+      function TimeAndProgress() {
+        const [done, setDone] = useState(5);
+        const progress = useMemo(() => Math.min(100, Math.round((done / 8) * 100)), [done]);
 
-.progress-outer {
-  background:#e6e6e6;
-  border-radius:999px;
-  height:14px;
-  overflow:hidden;
-  margin:12px 0;
-}
+        return (
+          <>
+            <section className="glass card col-6">
+              <h2>⏰ Тайм-менеджмент</h2>
+              <p>Умное расписание, напоминания и анти-прокрастинация.</p>
+              <div className="timeline">
+                <div className="event">09:00 — Пара: Алгоритмы</div>
+                <div className="event">14:00 — Pomodoro ×4 (курсовая)</div>
+                <div className="event">19:00 — Повторение перед экзаменом</div>
+              </div>
+              <div className="kpi-row">
+                <span className="chip">⚠️ Ты отстаёшь по 2 задачам</span>
+                <span className="chip">🔔 Скоро экзамен (через 5 дней)</span>
+              </div>
+            </section>
 
-.progress-inner {
-  height:100%;
-  width:0;
-  background:linear-gradient(90deg,#67d38a,#4CAF50);
-  transition:width .4s;
-}
+            <section className="glass card col-6">
+              <h2>📊 Аналитика и прогноз</h2>
+              <p>Оценка нагрузки, продуктивности и вероятности сдачи сессии.</p>
+              <label>
+                Выполнено задач за неделю: {done}/8
+                <input type="range" min="0" max="8" value={done} onChange={(e) => setDone(+e.target.value)} />
+              </label>
+              <div className="progress"><div className="bar" style={{ width: `${progress}%` }} /></div>
+              <div className="kpi-row">
+                <span className="chip">Прогноз экзамена: {60 + Math.round(progress * 0.35)} / 100</span>
+                <span className="chip">Риск выгорания: {progress < 45 ? "Высокий" : "Контролируемый"}</span>
+              </div>
+            </section>
+          </>
+        );
+      }
 
-.stats {
-  display:flex;
-  justify-content:space-between;
-  gap:8px;
-  color:var(--muted);
-  font-size:14px;
-  margin-bottom:10px;
-}
+      function WellnessAndSocial() {
+        return (
+          <>
+            <section className="glass card col-4">
+              <h2>🧘 Психология</h2>
+              <ul className="list">
+                <li>Трекер выгорания + режим «мне сейчас тяжело»</li>
+                <li>Поддержка перед экзаменом и breathing-паузы</li>
+                <li>AI-советы по сну, отдыху и фокус-сессиям</li>
+              </ul>
+            </section>
+            <section className="glass card col-8">
+              <h2>👥 Социальные функции</h2>
+              <div className="grid" style={{ marginTop: 8 }}>
+                <div className="col-6"><div className="glass card"><strong>Группы</strong><p>Совместные конспекты, трек задач и peer-review.</p></div></div>
+                <div className="col-6"><div className="glass card"><strong>Community Q&A</strong><p>Анонимные вопросы и рейтинг полезных ответов.</p></div></div>
+              </div>
+              <div className="kpi-row">
+                <span className="chip">Геймификация: уровни, XP, достижения</span>
+                <span className="chip">Персонализация под факультет</span>
+                <span className="chip">Голосовой ввод и озвучка конспектов</span>
+              </div>
+            </section>
+          </>
+        );
+      }
 
-.today {
-  background: var(--card);
-  padding:12px;
-  border-radius: var(--radius);
-  box-shadow:0 2px 4px rgba(0,0,0,0.04);
-  margin-bottom:10px;
-}
+      function Architecture() {
+        return (
+          <section className="glass card col-12">
+            <h2>⚙️ Проектная структура и API</h2>
+            <pre style={{whiteSpace:'pre-wrap', color:'#cbd5e1', fontSize:12, margin:0}}>{`studyverse/
+  apps/
+    web/ (Next.js, PWA, UI-kit, offline cache)
+    api/ (Node.js + Express/Fastify)
+  packages/
+    ai-core/ (pipeline: ingest -> summarize -> quiz -> explain)
+    scheduler/ (planner, pomodoro, deadline predictor)
+    analytics/ (progress engine, burnout index)
+    shared/ (types, validation schemas)
+  infra/
+    postgres/, redis/, object-storage/
 
-.calendar {
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
-  gap:8px;
-  margin-bottom:12px;
-}
+REST API examples:
+POST /api/auth/email
+POST /api/auth/google
+POST /api/materials/upload
+POST /api/materials/:id/summarize
+POST /api/assistant/chat
+GET  /api/dashboard/overview
+POST /api/schedule/auto-plan
+GET  /api/analytics/exam-forecast
+POST /api/wellness/checkin
+POST /api/groups/:id/notes`}</pre>
+          </section>
+        );
+      }
 
-.cal-day {
-  background:var(--card);
-  padding:10px;
-  border-radius:8px;
-  text-align:center;
-  border:1px solid #eee;
-  font-size:14px;
-  cursor:pointer;
-  touch-action: manipulation;
-}
+      function App() {
+        return (
+          <div className="app">
+            <header className="glass">
+              <div className="brand">STUDYVERSE</div>
+              <div className="badge">PWA • Dark Neon • Adaptive</div>
+            </header>
+            <Hero />
+            <main className="grid">
+              <StudyLab />
+              <Assistant />
+              <TimeAndProgress />
+              <WellnessAndSocial />
+              <Architecture />
+            </main>
+            <footer>© STUDYVERSE • Student Superapp Prototype</footer>
+          </div>
+        );
+      }
 
-.cal-day.done { background:var(--accent); color:#fff; border-color:#46a049; }
-
-.ex-list { display:flex; flex-direction:column; gap:8px; }
-
-.ex {
-  display:flex;
-  gap:10px;
-  align-items:center;
-  background:var(--card);
-  padding:12px;
-  border-radius:12px;
-  border:1px solid #eee;
-}
-
-.ex img {
-  width:72px;
-  height:72px;
-  border-radius:10px;
-  object-fit:cover;
-  background:#f0f0f0;
-}
-
-.ex b { display:block; font-size:16px; }
-
-.controls { display:flex; gap:8px; justify-content:center; margin-top:12px; }
-
-.btn {
-  background: var(--accent);
-  color:white;
-  padding:10px 14px;
-  border-radius:12px;
-  border:none;
-  font-size:15px;
-  cursor:pointer;
-  touch-action:manipulation;
-}
-
-.btn.secondary { background:#eee; color:#222; }
-
-footer { padding:12px; text-align:center; color:var(--muted); font-size:13px; margin-top:14px; }
-
-@media (max-width:480px){
-  .ex img { width:64px; height:64px; }
-  .cal-day { padding:12px; font-size:15px; }
-  .btn { padding:12px 16px; font-size:16px; }
-}
-</style>
-</head>
-
-<body>
-<header><h1>Фитнес на 30 дней</h1></header>
-
-<main class="container" role="main">
-  <div class="progress-outer"><div id="progressBar" class="progress-inner"></div></div>
-  <div class="stats">
-    <div>Выполнено: <b id="daysDone">0</b></div>
-    <div>Осталось: <b id="daysLeft">30</b></div>
-  </div>
-
-  <div id="todayLabel" class="today">Сегодня: День 1 — Силовая</div>
-  <div class="ex-list" id="exList" aria-live="polite"></div>
-
-  <h3 style="margin-top:14px">Календарь</h3>
-  <div class="calendar" id="calendar" aria-label="Календарь тренировок"></div>
-
-  <div class="controls">
-    <button id="markDone" class="btn">Отметить день как выполненный</button>
-    <button id="resetBtn" class="btn secondary">Сбросить прогресс</button>
-  </div>
-
-  <footer>Добавь сайт на главный экран через «Поделиться → На экран ’Домой’».</footer>
-</main>
-
-<script>
-const DAYS = 30;
-const STORAGE_KEY = 'fitness30_plan_v1';
-
-function createDefaultPlan(){
-  const plan=[];
-  for(let i=1;i<=DAYS;i++){
-    let type=(i%7===0)?'Восстановление':(i%2===1)?'Силовая':'Кардио';
-    plan.push({day:i,type,completed:false,exercises:generateExercisesForDay(i)});
-  }
-  return plan;
-}
-
-function generateExercisesForDay(i){
-  const warm={name:'Разминка — 5 минут',icon:'https://i.imgur.com/uk2X9iX.png'};
-  const stretch={name:'Растяжка — 6 минут',icon:'https://i.imgur.com/uk2X9iX.png'};
-  const main=[];
-  if(i%7===0){
-    main.push({name:'Лёгкая прогулка — 15 мин',icon:'https://i.imgur.com/uk2X9iX.png'});
-  } else if(i%2===1){
-    main.push({name:`Отжимания — ${5+Math.floor(i/2)*2} раз`,icon:'https://i.imgur.com/Fxh2S1H.png'});
-    main.push({name:`Приседания — ${10+Math.floor(i/2)*3} раз`,icon:'https://i.imgur.com/uk2X9iX.png'});
-    main.push({name:`Планка — ${20+Math.floor(i/2)*5} сек`,icon:'https://i.imgur.com/WCZzj9Y.png'});
-  } else {
-    main.push({name:`Бёрпи — ${5+Math.floor(i/2)} раз`,icon:'https://i.imgur.com/uk2X9iX.png'});
-    main.push({name:`Скакалка — ${30+Math.floor(i/2)*10} сек`,icon:'https://i.imgur.com/uk2X9iX.png'});
-    main.push({name:`Скручивания — ${12+Math.floor(i/2)*3} раз`,icon:'https://i.imgur.com/G7dkjCb.png'});
-  }
-  return [warm,...main,stretch];
-}
-
-function loadPlan(){
-  try { const raw=localStorage.getItem(STORAGE_KEY); if(raw) return JSON.parse(raw); } 
-  catch(e){}
-  return createDefaultPlan();
-}
-
-function savePlan(p){ localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); }
-
-let plan = loadPlan();
-let currentDay = 1;
-
-function renderCalendar(){
-  const cal=document.getElementById('calendar'); 
-  cal.innerHTML='';
-  for(let i=1;i<=DAYS;i++){
-    const div=document.createElement('div');
-    div.className='cal-day'+(plan[i-1].completed?' done':'');
-    div.textContent=i;
-    div.tabIndex=0;
-    div.addEventListener('click',()=>setCurrentDay(i));
-    div.addEventListener('keydown',e=>{if(e.key==='Enter') setCurrentDay(i);});
-    cal.appendChild(div);
-  }
-}
-
-function renderExercises(){
-  const d=plan[currentDay-1];
-  document.getElementById('todayLabel').textContent=`Сегодня: День ${d.day} — ${d.type}`;
-  const exList=document.getElementById('exList'); exList.innerHTML='';
-  d.exercises.forEach(ex=>{
-    const el=document.createElement('div'); el.className='ex';
-    el.innerHTML=`<img src="${ex.icon}" alt="${ex.name}"><div><b>${ex.name}</b></div>`;
-    exList.appendChild(el);
-  });
-}
-
-function renderProgress(){
-  const done=plan.filter(p=>p.completed).length;
-  document.getElementById('daysDone').textContent=done;
-  document.getElementById('daysLeft').textContent=DAYS-done;
-  document.getElementById('progressBar').style.width=(done/DAYS*100)+'%';
-}
-
-function setCurrentDay(n){ currentDay=n; renderExercises(); }
-
-document.getElementById('markDone').addEventListener('click',()=>{
-  plan[currentDay-1].completed=true;
-  savePlan(plan);
-  renderCalendar(); renderProgress();
-});
-
-document.getElementById('resetBtn').addEventListener('click',()=>{
-  if(confirm('Сбросить прогресс?')){
-    plan=createDefaultPlan(); currentDay=1; savePlan(plan);
-    renderCalendar(); renderExercises(); renderProgress();
-  }
-});
-
-renderCalendar(); renderExercises(); renderProgress();
-</script>
-</body>
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
+      }
+    </script>
+  </body>
 </html>
